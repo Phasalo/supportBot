@@ -10,6 +10,7 @@ from bot.filters.password import PasswordFilter
 from bot.handlers.admin import command_getcmds
 from bot.keyboards.inline import kb_project_picker
 from bot.keyboards.reply import kb_compose_cancel, kb_contact, kb_in_ticket
+from bot.metrics import tickets_created
 from bot.services.relay import notify_new_ticket, relay_user_message
 from bot.states import SupportSG
 from db.models import ProjectModel, UserModel
@@ -164,6 +165,7 @@ async def _(message: Message, bot: Bot, state: FSMContext, **kwargs):
         reply_markup=kb_in_ticket(),
     )
     if created:
+        tickets_created.labels(project=project.slug).inc()
         await notify_new_ticket(bot, container, ticket)
     await relay_user_message(bot, container, ticket, message, skip_header=created)
 

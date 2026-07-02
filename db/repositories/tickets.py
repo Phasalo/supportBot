@@ -32,6 +32,10 @@ class TicketsRepository:
         with TicketsTable(self._db_path) as t:
             return t.count_for_project(project_id)
 
+    def count_active_by_project(self) -> list[tuple[str, int]]:
+        with TicketsTable(self._db_path) as t:
+            return t.count_active_by_project()
+
     def get_tickets_for_project(
         self, project_id: int, page: int = 1, per_page: int = 8
     ) -> tuple[list[TicketModel], Pagination]:

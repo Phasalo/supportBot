@@ -180,6 +180,17 @@ class TicketsTable(BaseTable):
         )
         return self.cursor.fetchone()['total']
 
+    def count_active_by_project(self) -> list[tuple[str, int]]:
+        self.cursor.execute(
+            f"""
+            SELECT p.slug AS slug, COUNT(*) AS cnt
+            FROM {self.__tablename__} t
+            JOIN projects p ON t.project_id = p.project_id
+            WHERE t.is_active = 1
+            GROUP BY t.project_id, p.slug"""
+        )
+        return [(row['slug'], row['cnt']) for row in self.cursor.fetchall()]
+
     def get_active_tickets_for_operator(self, user_id: int) -> list[TicketModel]:
         self.cursor.execute(
             f"""

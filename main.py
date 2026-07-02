@@ -76,7 +76,13 @@ async def main() -> None:
     if bot_name and metrics_port:
         from aiogram_metrics import InstrumentedAiohttpSession, MetricsMiddleware, start_metrics_server
 
+        from bot.metrics import register_domain_metrics
+
         start_metrics_server(port=metrics_port)
+        try:
+            register_domain_metrics(config.db_path)
+        except Exception:
+            logger.exception('failed to register domain metrics; continuing without them')
         session = InstrumentedAiohttpSession(bot_name=bot_name, **session_kwargs)
         metrics_middleware = MetricsMiddleware(bot_name=bot_name)
     else:
