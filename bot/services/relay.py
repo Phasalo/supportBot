@@ -91,16 +91,42 @@ async def _project_recipients(container, project_id: int) -> tuple[list[int], bo
 async def notify_new_ticket(bot: Bot, container, ticket: TicketModel) -> None:
     recipients, is_fallback = await _project_recipients(container, ticket.project_id)
     project_title = project_link(ticket.project.title, ticket.project.url) if ticket.project else ''
-    user_name = ticket.user.html_mention if ticket.user else str(ticket.user_id)
+    kind_label = PHRASES_RU.replace(f'ticket_kind.{ticket.kind.value}')
     if is_fallback:
-        text = PHRASES_RU.replace('operator.fallback_admin', ticket_id=ticket.ticket_id, project=project_title)
+        text = PHRASES_RU.replace(
+            'operator.fallback_admin', ticket_id=ticket.ticket_id, project=project_title, kind=kind_label
+        )
         for chat_id in recipients:
             await safe_send_message(bot, chat_id, text)
         return
-    text = PHRASES_RU.replace('operator.new_ticket', ticket_id=ticket.ticket_id, project=project_title, user=user_name)
+    user_name = ticket.user.html_mention if ticket.user else str(ticket.user_id)
+    text = PHRASES_RU.replace(
+        'operator.new_ticket',
+        ticket_id=ticket.ticket_id,
+        project=project_title,
+        user=user_name,
+        kind=kind_label,
+    )
     markup = kb_open_ticket(ticket.ticket_id)
     for chat_id in recipients:
         await safe_send_message(bot, chat_id, text, markup)
+
+
+async def notify_new_suggestion(bot: Bot, container, ticket: TicketModel, message: Message) -> None:
+    recipients, is_fallback = await _project_recipients(container, ticket.project_id)
+    project_title = project_link(ticket.project.title, ticket.project.url) if ticket.project else ''
+    if is_fallback:
+        text = PHRASES_RU.replace(
+            'operator.fallback_admin_suggestion', ticket_id=ticket.ticket_id, project=project_title
+        )
+    else:
+        user_name = ticket.user.html_mention if ticket.user else str(ticket.user_id)
+        text = PHRASES_RU.replace(
+            'operator.new_suggestion', ticket_id=ticket.ticket_id, project=project_title, user=user_name
+        )
+    for chat_id in recipients:
+        await safe_send_message(bot, chat_id, text)
+        await safe_copy_message(bot, chat_id, message.chat.id, message.message_id)
 
 
 async def notify_user_closed(bot: Bot, container, ticket: TicketModel) -> None:

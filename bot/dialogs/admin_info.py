@@ -1,7 +1,8 @@
 from aiogram.fsm.state import State, StatesGroup
-from aiogram_dialog import Dialog, DialogManager, Window
+from aiogram_dialog import DialogManager, Window
 from aiogram_dialog.widgets.text import Format
 
+from bot.bot_utils.dialogs import QuietDialog
 from config.const import QUERIES_PER_PAGE, USERS_PER_PAGE
 from db.repositories.queries import QueriesRepository
 from db.repositories.users import UsersRepository
@@ -62,7 +63,7 @@ async def user_query_getter(dialog_manager: DialogManager, **kwargs):
     }
 
 
-users_dialog = Dialog(
+users_dialog = QuietDialog(
     Window(
         Format('{text}'),
         pagination_scroll(),
@@ -73,7 +74,7 @@ users_dialog = Dialog(
     )
 )
 
-user_query_dialog = Dialog(
+user_query_dialog = QuietDialog(
     Window(
         Format('{text}'),
         pagination_scroll(),

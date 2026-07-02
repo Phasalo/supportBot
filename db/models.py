@@ -11,6 +11,12 @@ class TicketStatus(StrEnum):
     CLOSED = 'closed'
 
 
+class TicketKind(StrEnum):
+    BUG = 'bug'
+    QUESTION = 'question'
+    FEATURE = 'feature'
+
+
 @dataclass
 class UserModel:
     user_id: int
@@ -81,6 +87,7 @@ class TicketModel:
     user_id: int
     ticket_id: int | None = None
     status: TicketStatus = TicketStatus.OPEN
+    kind: TicketKind = TicketKind.QUESTION
     assigned_operator_id: int | None = None
     is_active: bool = True
     created_at: datetime | None = None

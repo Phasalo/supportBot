@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import UTC, datetime
 
-from db.models import Pagination, ProjectModel, TicketModel, TicketStatus, UserModel
+from db.models import Pagination, ProjectModel, TicketKind, TicketModel, TicketStatus, UserModel
 from db.tables.base import BaseTable
 from db.utils import MSK
 
@@ -34,6 +34,7 @@ def _row_to_ticket(row: sqlite3.Row) -> TicketModel:
         project_id=row['project_id'],
         user_id=row['user_id'],
         status=TicketStatus(row['status']),
+        kind=TicketKind(row['kind']) if 'kind' in keys and row['kind'] else TicketKind.QUESTION,
         assigned_operator_id=row['assigned_operator_id'],
         is_active=bool(row['is_active']),
         created_at=(
@@ -57,6 +58,7 @@ class TicketsTable(BaseTable):
             project_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             status TEXT NOT NULL DEFAULT 'open',
+            kind TEXT NOT NULL DEFAULT 'question',
             assigned_operator_id INTEGER,
             is_active BOOLEAN NOT NULL DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -64,6 +66,9 @@ class TicketsTable(BaseTable):
             FOREIGN KEY (project_id) REFERENCES projects (project_id),
             FOREIGN KEY (user_id) REFERENCES users (user_id)
         )""")
+        existing_cols = {r['name'] for r in self.cursor.execute(f'PRAGMA table_info({self.__tablename__})')}
+        if 'kind' not in existing_cols:
+            self.cursor.execute(f"ALTER TABLE {self.__tablename__} ADD COLUMN kind TEXT NOT NULL DEFAULT 'question'")
         self.cursor.execute(
             f'CREATE UNIQUE INDEX IF NOT EXISTS uq_tickets_one_active '
             f'ON {self.__tablename__}(user_id) WHERE is_active = 1'
@@ -103,18 +108,31 @@ class TicketsTable(BaseTable):
         row = self.cursor.fetchone()
         return _row_to_ticket(row) if row else None
 
-    def get_or_create_active(self, user_id: int, project_id: int) -> tuple[TicketModel, bool]:
+    def get_or_create_active(self, user_id: int, project_id: int, kind: TicketKind) -> tuple[TicketModel, bool]:
+        if kind is TicketKind.FEATURE:
+            self.cursor.execute(
+                f'INSERT INTO {self.__tablename__} '
+                f'(project_id, user_id, status, kind, is_active, closed_at) '
+                f'VALUES (?, ?, ?, ?, 0, CURRENT_TIMESTAMP)',
+                (project_id, user_id, TicketStatus.CLOSED.value, kind.value),
+            )
+            self.conn.commit()
+            ticket_id = self.cursor.lastrowid
+            self._log('CREATE_TICKET', ticket_id=ticket_id, user_id=user_id, project_id=project_id, kind=kind.value)
+            return self.get_ticket(ticket_id), True
+
         existing = self.get_active_ticket_for_user(user_id)
         if existing:
             return existing, False
         try:
             self.cursor.execute(
-                f'INSERT INTO {self.__tablename__} (project_id, user_id, status, is_active) VALUES (?, ?, ?, 1)',
-                (project_id, user_id, TicketStatus.OPEN.value),
+                f'INSERT INTO {self.__tablename__} (project_id, user_id, status, kind, is_active) '
+                f'VALUES (?, ?, ?, ?, 1)',
+                (project_id, user_id, TicketStatus.OPEN.value, kind.value),
             )
             self.conn.commit()
             ticket_id = self.cursor.lastrowid
-            self._log('CREATE_TICKET', ticket_id=ticket_id, user_id=user_id, project_id=project_id)
+            self._log('CREATE_TICKET', ticket_id=ticket_id, user_id=user_id, project_id=project_id, kind=kind.value)
             return self.get_ticket(ticket_id), True
         except sqlite3.IntegrityError:
             self.conn.rollback()

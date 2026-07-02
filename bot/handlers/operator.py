@@ -28,6 +28,7 @@ def _ticket_card(ticket: TicketModel) -> str:
         ticket_id=ticket.ticket_id,
         project=project_link(ticket.project.title, ticket.project.url) if ticket.project else '',
         user=ticket.user.html_mention if ticket.user else ticket.user_id,
+        kind=PHRASES_RU.replace(f'ticket_kind.{ticket.kind.value}'),
         status=PHRASES_RU.replace(f'status.{ticket.status.value}'),
     )
 

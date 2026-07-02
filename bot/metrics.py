@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 tickets_created = Counter(
     'bot_tickets_created_total',
     'Support tickets opened',
-    ['project'],
+    ['project', 'kind'],
 )
 
 

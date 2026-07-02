@@ -2,10 +2,11 @@ from operator import itemgetter
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery
-from aiogram_dialog import Dialog, DialogManager, Window
+from aiogram_dialog import DialogManager, Window
 from aiogram_dialog.widgets.kbd import Cancel, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
+from bot.bot_utils.dialogs import QuietDialog
 from bot.keyboards.inline import kb_open_ticket
 from config.const import TICKETS_PER_PAGE
 from db.repositories.operators import OperatorsRepository
@@ -55,12 +56,13 @@ async def on_pick_ticket(callback: CallbackQuery, _widget, manager: DialogManage
         ticket_id=ticket.ticket_id,
         project=project_link(ticket.project.title, ticket.project.url) if ticket.project else '',
         user=ticket.user.html_mention if ticket.user else ticket.user_id,
+        kind=PHRASES_RU.replace(f'ticket_kind.{ticket.kind.value}'),
         status=PHRASES_RU.replace(f'status.{ticket.status.value}'),
     )
     await bot.send_message(callback.from_user.id, card, reply_markup=kb_open_ticket(ticket_id))
 
 
-operator_tickets_dialog = Dialog(
+operator_tickets_dialog = QuietDialog(
     Window(
         Format('{text}'),
         ScrollingGroup(

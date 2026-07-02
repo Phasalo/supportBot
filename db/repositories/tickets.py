@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from db.models import Pagination, TicketModel
+from db.models import Pagination, TicketKind, TicketModel
 from db.tables.tickets import TicketsTable
 
 
@@ -16,9 +16,9 @@ class TicketsRepository:
         with TicketsTable(self._db_path) as t:
             return t.get_active_ticket_for_user(user_id)
 
-    def get_or_create_active(self, user_id: int, project_id: int) -> tuple[TicketModel, bool]:
+    def get_or_create_active(self, user_id: int, project_id: int, kind: TicketKind) -> tuple[TicketModel, bool]:
         with TicketsTable(self._db_path) as t:
-            return t.get_or_create_active(user_id, project_id)
+            return t.get_or_create_active(user_id, project_id, kind)
 
     def claim_ticket(self, ticket_id: int, operator_id: int) -> bool:
         with TicketsTable(self._db_path) as t:

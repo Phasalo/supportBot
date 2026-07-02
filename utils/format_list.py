@@ -91,10 +91,11 @@ def _message_body(msg: TicketMessageModel) -> str:
 
 def format_ticket_history(ticket: TicketModel, messages: list[TicketMessageModel]) -> str:
     status = PHRASES_RU.replace(f'status.{ticket.status.value}')
+    kind = PHRASES_RU.replace(f'ticket_kind.{ticket.kind.value}')
     user_name = ticket.user.html_mention if ticket.user else str(ticket.user_id)
     created = ticket.created_at.strftime('%d.%m.%Y %H:%M') if ticket.created_at else PHRASES_RU.error.unknown
 
-    header = [f'<b>{PHRASES_RU.ticket.label_ticket} #{ticket.ticket_id}</b> · {status}']
+    header = [f'<b>{PHRASES_RU.ticket.label_ticket} #{ticket.ticket_id}</b> · {kind} · {status}']
     if ticket.project:
         header.append(f'{PHRASES_RU.ticket.header_project} {project_link(ticket.project.title, ticket.project.url)}')
     header.append(f'{PHRASES_RU.ticket.header_user} {user_name}')

@@ -20,3 +20,12 @@ class ReplyDoneCallback(CallbackData, prefix='reply_done'):
 
 class ProjectPickCallback(CallbackData, prefix='pick_project'):
     slug: str
+
+
+class TicketKindPickCallback(CallbackData, prefix='pick_kind'):
+    slug: str
+    kind: str
+
+
+class PickerCancelCallback(CallbackData, prefix='pick_cancel'):
+    pass

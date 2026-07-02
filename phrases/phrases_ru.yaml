@@ -21,6 +21,9 @@ commands:
 button:
   user_contact: "🆘 Обратиться"
   user_close: "✅ Закрыть тикет"
+  kind_bug: "🐛 Баг"
+  kind_question: "❓ Вопрос"
+  kind_feature: "💡 Предложение"
   next_page: "❯"
   last_page: "»"
   prev_page: "❮"
@@ -109,6 +112,11 @@ status:
   assigned: "в работе"
   closed: "закрыт"
 
+ticket_kind:
+  bug: "🐛 Баг"
+  question: "❓ Вопрос"
+  feature: "💡 Предложение"
+
 role:
   user: "👤 Пользователь"
   operator: "🛟 Оператор"
@@ -139,7 +147,7 @@ ticket:
   gone: "Тикет не найден."
 
 project:
-  bad_slug: "⚠️ slug может содержать только латиницу, цифры, _ и - (без __)"
+  bad_slug: "⚠️ slug может содержать только латиницу, цифры, _ и - (без __), не длиннее 32 символов"
   empty_title: "⚠️ Название не может быть пустым"
   added: "✅ Проект <b>{title}</b> создан"
   exists: "⚠️ Проект с таким slug уже существует"
@@ -176,11 +184,15 @@ project:
 support:
   idle: "Нажмите «Обратиться», чтобы написать в поддержку."
   choose_project: "Выберите проект, по которому хотите обратиться:"
+  choose_kind: "Что вы хотите отправить по проекту «{project}»?"
   no_projects: "Поддержка временно недоступна — нет активных проектов."
   unknown_project: "Проект не найден или отключён."
-  compose_prompt: "Опишите вопрос по проекту «{project}» — первое сообщение откроет обращение. «⬅️ Отмена» — выйти."
+  unknown_kind: "Не удалось определить тип обращения — попробуйте ещё раз."
+  compose_prompt: "Опишите обращение по проекту «{project}» — первое сообщение откроет диалог с оператором. «⬅️ Отмена» — выйти."
+  compose_suggestion_prompt: "Опишите ваше предложение по проекту «{project}». Ответ не придёт — команда просто прочитает и учтёт. «⬅️ Отмена» — выйти."
   contact_cancelled: "Окей, обращение не создано. Нажмите «Обратиться», когда понадобится."
   ticket_created: "✅ Обращение по проекту «{project}» создано — сообщение передано оператору. Ответ придёт сюда."
+  suggestion_sent: "✅ Спасибо! Предложение по проекту «{project}» передано команде."
   ticket_already_open: "У вас уже есть открытое обращение по проекту «{project}». Просто напишите сюда — сообщение дойдёт оператору."
   ticket_closed_user: "✅ Обращение закрыто. Нажмите «Обратиться», чтобы открыть новое."
 
@@ -195,7 +207,8 @@ operator:
   list_all_title: "<b>Операторы по проектам</b>\n\n"
   list_empty: "Операторов нет"
   list_line: "<code>{user_id}</code> {name}\n"
-  new_ticket: "🆕 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}"
+  new_ticket: "🆕 {kind} · Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}"
+  new_suggestion: "💡 Предложение · #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}"
   incoming: "💬 Тикет #{ticket_id} · <b>{project}</b> · {user}"
   reply_prompt: "✍️ Режим ответа по тикету #{ticket_id}. Отправьте сообщение (любой контент). /done — выйти."
   reply_ticket_closed: "⚠️ Тикет уже закрыт"
@@ -206,9 +219,10 @@ operator:
   foreign_ticket: "⚠️ Этот тикет не в вашей зоне ответственности"
   closed: "✅ Тикет #{ticket_id} закрыт"
   closed_by_user: "🚪 Пользователь закрыл обращение #{ticket_id} · <b>{project}</b>"
-  ticket_card: "💬 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}\nСтатус: {status}"
+  ticket_card: "💬 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}\nТип: {kind}\nСтатус: {status}"
   panel_empty: "Открытых обращений в вашей зоне нет"
   panel_title: "Выберите обращение:"
-  fallback_admin: "⚠️ Новый тикет #{ticket_id} по проекту «{project}», но у проекта нет операторов. /my_projects — взять проект."
+  fallback_admin: "⚠️ Новый тикет #{ticket_id} · {kind} по проекту «{project}», но у проекта нет операторов. /my_projects — взять проект."
+  fallback_admin_suggestion: "💡 Предложение #{ticket_id} по проекту «{project}» — у проекта нет операторов, тикет закрыт автоматически. Содержимое ниже."
   my_projects_title: "Ваши проекты (нажмите, чтобы добавить/убрать себя):"
   my_projects_empty: "Активных проектов нет"

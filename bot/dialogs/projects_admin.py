@@ -3,13 +3,14 @@ from operator import itemgetter
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import Dialog, DialogManager, Window
+from aiogram_dialog import DialogManager, Window
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, Cancel, Column, Row, ScrollingGroup, Select, SwitchTo
 from aiogram_dialog.widgets.text import Const, Format
 
+from bot.bot_utils.dialogs import QuietDialog
 from config.const import PROJECTS_PER_PAGE, TICKET_HISTORY_PER_PAGE, TICKETS_PER_PAGE
-from db.models import TicketStatus
+from db.models import TicketKind, TicketStatus
 from db.repositories.operators import OperatorsRepository
 from db.repositories.projects import ProjectsRepository
 from db.repositories.ticket_messages import TicketMessagesRepository
@@ -22,10 +23,13 @@ from ._pagination import SCROLL_ID, build_pagination_data, current_page, paginat
 
 _SLUG_RE = re.compile(r'[A-Za-z0-9_-]+')
 _URL_RE = re.compile(r'(https?|tg)://\S+')
+# Ограничение — из-за 64-байтного лимита Telegram на callback_data:
+# `pick_kind:<slug>:<kind>` = 9+1+slug+1+до 8. Порог 32 оставляет запас.
+_SLUG_MAX_LEN = 32
 
 
 def _valid_slug(slug: str) -> bool:
-    return bool(_SLUG_RE.fullmatch(slug)) and '__' not in slug
+    return bool(_SLUG_RE.fullmatch(slug)) and '__' not in slug and len(slug) <= _SLUG_MAX_LEN
 
 
 class ProjectsSG(StatesGroup):
@@ -45,6 +49,12 @@ _STATUS_ICON = {
     TicketStatus.OPEN: '🟢',
     TicketStatus.ASSIGNED: '🟡',
     TicketStatus.CLOSED: '⚪️',
+}
+
+_KIND_ICON = {
+    TicketKind.BUG: '🐛',
+    TicketKind.QUESTION: '❓',
+    TicketKind.FEATURE: '💡',
 }
 
 
@@ -111,12 +121,13 @@ async def confirm_getter(dialog_manager: DialogManager, **kwargs):
 
 
 def _ticket_item_label(ticket) -> str:
-    icon = _STATUS_ICON.get(ticket.status, '⚪️')
+    status_icon = _STATUS_ICON.get(ticket.status, '⚪️')
+    kind_icon = _KIND_ICON.get(ticket.kind, '❓')
     name = ticket.user.full_name() if ticket.user else str(ticket.user_id)
-    if len(name) > 18:
-        name = f'{name[:17]}…'
+    if len(name) > 16:
+        name = f'{name[:15]}…'
     date = ticket.created_at.strftime('%d.%m.%y') if ticket.created_at else ''
-    return f'{icon} #{ticket.ticket_id} · {name} · {date}'
+    return f'{status_icon}{kind_icon} #{ticket.ticket_id} · {name} · {date}'
 
 
 async def project_tickets_getter(dialog_manager: DialogManager, **kwargs):
@@ -338,7 +349,7 @@ async def on_toggle_project(callback: CallbackQuery, _widget, manager: DialogMan
 
 # ---------- dialogs ----------
 
-projects_dialog = Dialog(
+projects_dialog = QuietDialog(
     Window(
         Format('{text}'),
         ScrollingGroup(
@@ -466,7 +477,7 @@ projects_dialog = Dialog(
     ),
 )
 
-my_projects_dialog = Dialog(
+my_projects_dialog = QuietDialog(
     Window(
         Format('{text}'),
         ScrollingGroup(
