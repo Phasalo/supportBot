@@ -1,6 +1,7 @@
-from db.models import Pagination, QueryModel, UserModel
+from db.models import Pagination, QueryModel, TicketMessageModel, TicketModel, UserModel
 from phrases import PHRASES_RU
 from utils import format_string
+from utils.format_string import clear_string, project_link
 
 
 def format_user_list(users_info: list[UserModel], pagination: Pagination) -> str:
@@ -62,3 +63,51 @@ def format_queries_text(
         txt.append(line_template.format(**line_data))
 
     return ''.join(txt)
+
+
+def _role_label(role: str) -> str:
+    try:
+        return PHRASES_RU.replace(f'role.{role}')
+    except AttributeError:
+        return role
+
+
+def _content_kind(content_type: str) -> str:
+    try:
+        return PHRASES_RU.replace(f'content_kind.{content_type}')
+    except AttributeError:
+        return PHRASES_RU.content_kind.unknown
+
+
+def _message_body(msg: TicketMessageModel) -> str:
+    content_type = msg.content_type.rsplit('.', 1)[-1].lower()
+    if content_type == 'text':
+        return clear_string(msg.text) if msg.text else PHRASES_RU.icon.not_text
+    kind = _content_kind(content_type)
+    if msg.text:
+        return f'{kind}\n{clear_string(msg.text)}'
+    return kind
+
+
+def format_ticket_history(ticket: TicketModel, messages: list[TicketMessageModel]) -> str:
+    status = PHRASES_RU.replace(f'status.{ticket.status.value}')
+    user_name = ticket.user.html_mention if ticket.user else str(ticket.user_id)
+    created = ticket.created_at.strftime('%d.%m.%Y %H:%M') if ticket.created_at else PHRASES_RU.error.unknown
+
+    header = [f'<b>{PHRASES_RU.ticket.label_ticket} #{ticket.ticket_id}</b> · {status}']
+    if ticket.project:
+        header.append(f'{PHRASES_RU.ticket.header_project} {project_link(ticket.project.title, ticket.project.url)}')
+    header.append(f'{PHRASES_RU.ticket.header_user} {user_name}')
+    header.append(f'{PHRASES_RU.ticket.header_created} {created}')
+    if ticket.closed_at:
+        header.append(f'{PHRASES_RU.ticket.header_closed} {ticket.closed_at.strftime("%d.%m.%Y %H:%M")}')
+
+    text = '\n'.join(header)
+    if not messages:
+        return text + PHRASES_RU.ticket.history_empty
+
+    lines = [text, '\n\n']
+    for msg in messages:
+        time = msg.created_at.strftime('%d.%m %H:%M') if msg.created_at else ''
+        lines.append(f'{_role_label(msg.sender_role)} · <i>{time}</i>\n<blockquote>{_message_body(msg)}</blockquote>\n')
+    return ''.join(lines)

@@ -8,6 +8,7 @@ from aiogram.types import InlineQuery, Message, TelegramObject
 from bot.bot_utils.routers import BaseRouter
 from db.models import QueryModel, UserModel
 from db.repositories.queries import QueriesRepository
+from db.repositories.tickets import TicketsRepository
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class UserLoggerMiddleware(BaseMiddleware):
             skip_commands = [
                 f'/{cmd}'
                 for command in BaseRouter.available_commands
-                if command.is_admin
+                if command.is_admin or command.is_operator
                 for cmd in [command.name, *list(command.aliases)]
             ]
             if event.text and any(event.text.startswith(cmd) for cmd in skip_commands):
@@ -40,6 +41,11 @@ class UserLoggerMiddleware(BaseMiddleware):
         if user_row is None:
             logger.warning("Cannot add queries. The 'user_row' key was not found in the middleware data.")
             return await handler(event, data)
+
+        if isinstance(event, Message) and not (event.text and event.text.startswith('/')):
+            tickets_repo: TicketsRepository = await data['dishka_container'].get(TicketsRepository)
+            if tickets_repo.get_active_ticket_for_user(user_row.user_id):
+                return await handler(event, data)
 
         queries_repo: QueriesRepository = await data['dishka_container'].get(QueriesRepository)
 

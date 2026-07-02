@@ -1,88 +1,59 @@
-<h1 align="center">Phasalo Bot Template</h1>
+<h1 align="center">Phasalo Support Bot</h1>
 <p align="center">
-Полпути к идеальному боту. Красиво, как всегда.
+Один бот — поддержка для всех проектов Phasalo. Красиво, как всегда.
 </p>
 <p align="center">
 <img src="https://img.shields.io/badge/made%20by-CSSSensei,%20MaxMavr-439900">
 <a href="https://github.com/Phasalo"><img src="https://img.shields.io/badge/Phasalo-84D300"></a>
-<img src="https://img.shields.io/badge/version-if%20n%20==%202-D1F24E">
 </p>
 
-Так много лет нас просили показать, как же мы пишем таких охуительных ботов.
-Встречайте — все наши знания в одном репозитории!
-
-Это не просто шаблон, а выжимка сотен часов продакшена, боли и любви к красивому коду.
+Единый support-бот для проектов <b>Phasalo</b>. Пользователь приходит по deep-link `?start=<slug>`,
+его обращение становится тикетом, а операторы ведут двусторонний диалог **прямо внутри бота**.
 
 <h1></h1>
 
-Две пошаговые инструкции для <small>самых маленьких</small>.
+## Запуск
 
-## <img src="https://img.shields.io/badge/Рекомендуется-555555"><br> Работа через форк
-
-### 1. Создайте форк репозитория
-Нажмите кнопку [`Fork`](https://github.com/Phasalo/PhasaloBotTemplate/fork) в правом верхнем углу и выберите свой аккаунт.
-
-### 2. Клонируйте свой форк
+### 1. Зависимости
 ```bash
-git clone https://github.com/ВАШ_АККАУНТ/PhasaloBotTemplate.git my-project
-cd my-project
+uv sync          # или: pip install -r requirements.txt
 ```
-> Замените `my-project` на имя директории, куда хотите всё сохранить.
 
-### 3. Настройте связь с оригиналом
-Чтобы получать обновления
+### 2. Настройте окружение
 ```bash
-git remote add upstream https://github.com/Phasalo/PhasaloBotTemplate.git
+cp .env.example .env
 ```
+> Минимум — `BOT_TOKEN` и `PASSWORD` (пароль-суперюзер для входа в админку).
 
-### 4. Проверьте репозитории
+### 3. Запуск
 ```bash
-git remote -v
+python main.py
 ```
-Должно показать
+> Таблицы создаются автоматически при первом старте.
+
+## Как пользоваться
+
+### Админ
+Отправьте боту `PASSWORD` → станете администратором. Дальше:
 ```
-origin    # ваш форк (чтение/запись)
-upstream  # оригинал (только чтение)
+/projects                        панель проектов: создать / редактировать
+                                 (title, slug, ссылка), вкл/выкл, удалить,
+                                 deep-link, история тикетов и переписки
+/my_projects                     тоггл своих проектов (зона ответственности)
+/add_operator <user_id> <slug>   назначить оператора
+/remove_operator <user_id> <slug> снять оператора
+/operators [slug]                кто на проекте (или везде)
 ```
 
-### Как обновляться из оригинала
-Если хотите получить свежие изменения
-```bash
-git fetch upstream
-git merge upstream/master
-```
-или для перезаписи всех изменений
-```bash
-git reset --hard upstream/master
-```
+### Оператор
+- Новый тикет → пуш с кнопками **[Открыть] [Ответить]**.
+- `/panel` — открытые обращения в вашей зоне.
+- **Ответить** → режим ответа (любой контент уходит юзеру), **/done** — выйти, **Закрыть** — завершить тикет.
 
-### Пользуйтесь!
-Теперь вы можете:
-- Свободно менять код в своём форке
-- Создавать новые ветки
-- Предлагать изменения в оригинал через Pull Request
-
-## Независимый проект
-
-### 1. Клонируем репозиторий
-```bash
-git clone https://github.com/Phasalo/PhasaloBotTemplate.git my-project
-cd my-project
-```
-> Замените `my-project` на имя директории, куда хотите всё сохранить.
-
-### 2. Удаляем привязку к оригиналу
-```bash
-git remote remove origin
-```
-
-### 3. Проверяем
-```bash
-git remote -v
-```
-> Должно быть пусто — значит, всё получилось.
-
-### Пользуйтесь!
+### Пользователь
+- `t.me/<bot>?start=<slug>` (или `/start` → **[🆘 Обратиться]** → выбор проекта)
+- Тикет создаётся **на первом сообщении** — мисклик по deep-link никого не дёргает
+- В тикете постоянная кнопка **[✅ Закрыть тикет]** — юзер может закрыть сам
 
 <p align="center">
   <img width="1872" height="888" alt="Phasalo" src="https://github.com/user-attachments/assets/1e33d343-33cb-4682-a172-c654fbcd24a7" />
@@ -91,5 +62,5 @@ git remote -v
 <p align="center">
 <b>Phasalo</b><br>
 <i>Делаем красиво!</i><br><br>
-2025
+2026
 </p>

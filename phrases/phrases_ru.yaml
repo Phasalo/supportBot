@@ -1,30 +1,49 @@
 commands:
-  start: "Стартовое сообщение"
-  help: "Помощь"
+  start: |
+    Это бот поддержки <b>Phasalo</b>.
+    Нажмите «Обратиться», чтобы создать обращение.
+  help: |
+    🛟 <b>Поддержка Phasalo</b>
+
+    Бот связывает вас с оператором поддержки нужного проекта.
+  
+    <b>Как это работает</b>
+    • Обращение становится тикетом; ваши сообщения — текст, фото, файлы — уходят оператору
+    • Оператор отвечает прямо здесь, в этом чате
+    • Одновременно открыт один тикет; когда вопрос решён, оператор его закрывает
+    • Чтобы открыть новый — просто напишите снова
   about: |
-    Продакшн <b><a href="https://t.me/phasalo">Phasalo</a></b>
+    Разработка <b><a href="https://t.me/phasalo">Phasalo</a></b>
     Дизайн <b><a href="https://t.me/kfprod">KFproduction</a></b>
 
-    2025
-
-answers:
-  unknown:
-    - "Я тебя не понимаю…"
-    - "Я не понимаю, о чем ты"
-    - "Что ты имеешь в виду? 🧐"
-    - "Я в замешательстве 🤨"
-    - "Не улавливаю смысла 🙃"
-    - "Что ты пытаешься сказать❓"
-    - "Не понимаю твоего сообщения 😕"
-    - "🤷‍♂️ Не понимаю 🤷‍♀️"
+    2026
 
 button:
+  user_contact: "🆘 Обратиться"
+  user_close: "✅ Закрыть тикет"
   next_page: "❯"
   last_page: "»"
   prev_page: "❮"
   first_page: "«"
-
-placeholder_appeal: "PhasaloBotTemplate"
+  open_ticket: "📨 Открыть"
+  reply_ticket: "✍️ Ответить"
+  close_ticket: "✅ Закрыть"
+  done_reply: "🚪 Завершить"
+  close_panel: "✖️ Закрыть"
+  add_project: "➕ Добавить проект"
+  enable_project: "🟢 Включить"
+  disable_project: "🔴 Отключить"
+  edit_title: "✏️ Название"
+  edit_slug: "🏷 Slug"
+  edit_url: "🔗 Ссылка"
+  delete_project: "🗑 Удалить"
+  tickets: "🎫 Тикеты"
+  back_to_card: "⬅️ К проекту"
+  back_to_tickets: "⬅️ К тикетам"
+  back_to_list: "⬅️ К списку"
+  confirm_delete: "🗑 Да, удалить"
+  cancel: "Отмена"
+  user_cancel: "⬅️ Отмена"
 
 success:
   demoted: "Уровень доступа пользователя <i>{user_id}</i> понижен"
@@ -35,6 +54,7 @@ success:
   clear_temp: "Временные файлы очищены"
 
 error:
+  dialog_expired: "Сообщение устарело — откройте заново."
   clear_temp: "⚠️ Ошибка со стороны удалятеля"
   empty_argument: "⚠️ Ты не передал аргумент команды"
   not_digit_argument: "⚠️ Аргумент команды не число"
@@ -52,9 +72,11 @@ title:
   users: "<b>Пользователи</b>"
   commands: "<b>Доступные команды</b>\n\n"
   query: "<b>Запросы</b>"
+  projects: "<b>Проекты</b>"
 
 subtitle:
   admin_commands: "<i>Админские</i>\n"
+  operator_commands: "\n\n<i>Операторские</i>\n"
   user_commands: "\n\n<i>Пользовательские</i>\n"
 
 footnote:
@@ -81,3 +103,112 @@ template:
   user: "<code>{user_id}</code><a href=\"tg://user?id={user_id}\">{username}</a>  <i>{registration_date}</i> {query_stat}\n"
   user_query: "<blockquote>{time}</blockquote> <i>{query}</i>\n\n"
   all_queries: "<a href=\"tg://user?id={user_id}\">{username}</a> <blockquote>{time}</blockquote> <i>{query}</i>\n\n"
+
+status:
+  open: "открыт"
+  assigned: "в работе"
+  closed: "закрыт"
+
+role:
+  user: "👤 Пользователь"
+  operator: "🛟 Оператор"
+
+content_kind:
+  photo: "📷 фото"
+  document: "📎 файл"
+  video: "🎬 видео"
+  animation: "🎬 GIF"
+  voice: "🎤 голосовое"
+  audio: "🎵 аудио"
+  video_note: "📹 кружок"
+  sticker: "🩷 стикер"
+  contact: "👤 контакт"
+  location: "📍 геолокация"
+  unknown: "📦 вложение"
+
+ticket:
+  label_ticket: "🎫 Тикет"
+  list_title: "🎫 <b>Тикеты</b>"
+  list_total: "{total} всего"
+  list_empty: "🎫 <b>Тикеты</b>\n\nПо этому проекту ещё не было обращений."
+  header_project: "Проект:"
+  header_user: "Пользователь:"
+  header_created: "Создан:"
+  header_closed: "Закрыт:"
+  history_empty: "\n\n<i>Сообщений в тикете нет.</i>"
+  gone: "Тикет не найден."
+
+project:
+  bad_slug: "⚠️ slug может содержать только латиницу, цифры, _ и - (без __)"
+  empty_title: "⚠️ Название не может быть пустым"
+  added: "✅ Проект <b>{title}</b> создан"
+  exists: "⚠️ Проект с таким slug уже существует"
+  not_found: "⚠️ Проект «{slug}» не найден"
+  gone: "Проект удалён"
+  disabled: "🔴 Проект отключён"
+  enabled: "🟢 Проект включён"
+  none: "Проектов пока нет. Нажмите «➕ Добавить проект»."
+  list_title: "<b>Проекты</b>\nВыберите проект для управления:"
+  active: "🟢 активен"
+  inactive: "🔴 отключён"
+  card: |
+    <b>{title}</b>
+    slug: <code>{slug}</code>
+    deep-link: <code>{deeplink}</code>
+    статус: {status}
+    операторов: {operators} · тикетов: {tickets}
+  add_slug_prompt: "Введите <b>slug</b> нового проекта (латиница, цифры, _ , -) — он станет частью deep-link:"
+  add_title_prompt: "Теперь введите <b>название</b> проекта:"
+  edit_title_prompt: "Введите новое название проекта:"
+  edit_slug_prompt: "Введите новый slug (осторожно: старые deep-link перестанут работать):"
+  edit_url_prompt: "Пришлите ссылку на проект (http://, https:// или tg://). «-» — убрать ссылку:"
+  bad_url: "⚠️ Нужна ссылка вида https://… или tg://…"
+  renamed: "✅ Название обновлено"
+  reslugged: "✅ Slug обновлён"
+  url_updated: "✅ Ссылка на проект обновлена"
+  url_cleared: "✅ Ссылка на проект убрана"
+  deleted: "🗑 Проект «{title}» удалён"
+  confirm_delete: |
+    🗑 Удалить проект <b>{title}</b>?
+
+    Будет удалено безвозвратно: операторов — {operators}, тикетов — {tickets} (вместе с историей переписки).
+
+support:
+  idle: "Нажмите «Обратиться», чтобы написать в поддержку."
+  choose_project: "Выберите проект, по которому хотите обратиться:"
+  no_projects: "Поддержка временно недоступна — нет активных проектов."
+  unknown_project: "Проект не найден или отключён."
+  compose_prompt: "Опишите вопрос по проекту «{project}» — первое сообщение откроет обращение. «⬅️ Отмена» — выйти."
+  contact_cancelled: "Окей, обращение не создано. Нажмите «Обратиться», когда понадобится."
+  ticket_created: "✅ Обращение по проекту «{project}» создано — сообщение передано оператору. Ответ придёт сюда."
+  ticket_already_open: "У вас уже есть открытое обращение по проекту «{project}». Просто напишите сюда — сообщение дойдёт оператору."
+  ticket_closed_user: "✅ Обращение закрыто. Нажмите «Обратиться», чтобы открыть новое."
+
+operator:
+  usage_add: "⚠️ Использование: /add_operator &lt;user_id&gt; &lt;slug&gt;"
+  usage_remove: "⚠️ Использование: /remove_operator &lt;user_id&gt; &lt;slug&gt;"
+  added: "✅ Пользователь <code>{user_id}</code> назначен оператором проекта «{title}»"
+  removed: "✅ Пользователь <code>{user_id}</code> снят с проекта «{title}»"
+  already: "⚠️ Пользователь уже оператор этого проекта"
+  not_assigned: "⚠️ Пользователь не оператор этого проекта"
+  list_title: "<b>Операторы проекта «{project}»</b>\n\n"
+  list_all_title: "<b>Операторы по проектам</b>\n\n"
+  list_empty: "Операторов нет"
+  list_line: "<code>{user_id}</code> {name}\n"
+  new_ticket: "🆕 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}"
+  incoming: "💬 Тикет #{ticket_id} · <b>{project}</b> · {user}"
+  reply_prompt: "✍️ Режим ответа по тикету #{ticket_id}. Отправьте сообщение (любой контент). /done — выйти."
+  reply_ticket_closed: "⚠️ Тикет уже закрыт"
+  reply_failed: "⚠️ Не удалось доставить сообщение пользователю (возможно, он заблокировал бота)"
+  reply_done: "🚪 Режим ответа завершён"
+  claimed: "✅ Тикет #{ticket_id} взят в работу"
+  claim_failed: "⚠️ Тикет уже взят другим оператором"
+  foreign_ticket: "⚠️ Этот тикет не в вашей зоне ответственности"
+  closed: "✅ Тикет #{ticket_id} закрыт"
+  closed_by_user: "🚪 Пользователь закрыл обращение #{ticket_id} · <b>{project}</b>"
+  ticket_card: "💬 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}\nСтатус: {status}"
+  panel_empty: "Открытых обращений в вашей зоне нет"
+  panel_title: "Выберите обращение:"
+  fallback_admin: "⚠️ Новый тикет #{ticket_id} по проекту «{project}», но у проекта нет операторов. /my_projects — взять проект."
+  my_projects_title: "Ваши проекты (нажмите, чтобы добавить/убрать себя):"
+  my_projects_empty: "Активных проектов нет"

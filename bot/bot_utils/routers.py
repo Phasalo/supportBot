@@ -5,25 +5,34 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from bot.bot_utils.filters import AdminFilter
+from bot.bot_utils.filters import AdminFilter, OperatorFilter
 from bot.bot_utils.models import CommandUnit
 
 
 class BaseRouter(Router):
     available_commands: typing.ClassVar[list[CommandUnit]] = []
     is_admin: bool = False  # По умолчанию не админский роутер
+    is_operator: bool = False  # По умолчанию не операторский роутер
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.is_admin:
             self.message.filter(AdminFilter())
+        if self.is_operator:
+            self.message.filter(OperatorFilter())
+            self.callback_query.filter(OperatorFilter())
 
     def command(self, command: str | tuple[str, ...], description: str = '', *placeholders):
         def decorator(handler):
             commands = (command,) if isinstance(command, str) else command
             self.available_commands.append(
                 CommandUnit(
-                    commands[0], commands[1:], description, self.is_admin, placeholders if placeholders else None
+                    commands[0],
+                    commands[1:],
+                    description,
+                    self.is_admin,
+                    self.is_operator,
+                    placeholders if placeholders else None,
                 )
             )
 
@@ -55,6 +64,10 @@ class BaseRouter(Router):
 
 class AdminRouter(BaseRouter):
     is_admin = True
+
+
+class OperatorRouter(BaseRouter):
+    is_operator = True
 
 
 class UserRouter(BaseRouter):

@@ -1,7 +1,11 @@
 from dishka import Provider, Scope, make_async_container, provide
 
 from config.settings import Config
+from db.repositories.operators import OperatorsRepository
+from db.repositories.projects import ProjectsRepository
 from db.repositories.queries import QueriesRepository
+from db.repositories.ticket_messages import TicketMessagesRepository
+from db.repositories.tickets import TicketsRepository
 from db.repositories.users import UsersRepository
 
 
@@ -23,6 +27,22 @@ class AppProvider(Provider):
     @provide
     def queries_repo(self, config: Config) -> QueriesRepository:
         return QueriesRepository(config.db_path)
+
+    @provide
+    def projects_repo(self, config: Config) -> ProjectsRepository:
+        return ProjectsRepository(config.db_path)
+
+    @provide
+    def operators_repo(self, config: Config) -> OperatorsRepository:
+        return OperatorsRepository(config.db_path)
+
+    @provide
+    def tickets_repo(self, config: Config) -> TicketsRepository:
+        return TicketsRepository(config.db_path)
+
+    @provide
+    def ticket_messages_repo(self, config: Config) -> TicketMessagesRepository:
+        return TicketMessagesRepository(config.db_path)
 
 
 def build_container(config: Config):

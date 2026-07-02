@@ -3,3 +3,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent.parent
 USERS_PER_PAGE = 15
 QUERIES_PER_PAGE = 6
+PROJECTS_PER_PAGE = 10
+TICKETS_PER_PAGE = 8
+TICKET_HISTORY_PER_PAGE = 10

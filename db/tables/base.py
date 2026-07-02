@@ -12,6 +12,9 @@ class BaseTable:
     def __init__(self, db_path: Path):
         self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
+        self.conn.execute('PRAGMA journal_mode=WAL')
+        self.conn.execute('PRAGMA busy_timeout=5000')
+        self.conn.execute('PRAGMA foreign_keys=ON')
         self.cursor = self.conn.cursor()
 
     def __enter__(self):

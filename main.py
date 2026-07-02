@@ -28,10 +28,25 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram_dialog import setup_dialogs
 from dishka.integrations.aiogram import setup_dishka
 
-from bot.dialogs import user_query_dialog, users_dialog
-from bot.handlers import admin_router, default_router, inline_router
+from bot.dialogs import (
+    my_projects_dialog,
+    operator_tickets_dialog,
+    projects_dialog,
+    user_query_dialog,
+    users_dialog,
+)
+from bot.handlers import (
+    admin_router,
+    admin_support_router,
+    default_router,
+    errors_router,
+    inline_router,
+    operator_router,
+    relay_router,
+)
 from bot.handlers.default import register_password_handler
 from bot.middlewares import GetUserMiddleware, ShadowBanMiddleware, UserLoggerMiddleware
+from bot.middlewares.retry_request import RetryRequestMiddleware
 from config import load_config
 from config.const import BASE_DIR
 from config.logging import setup_logging
@@ -69,10 +84,12 @@ async def main() -> None:
         metrics_middleware = None
         logger.info('Metrics disabled (set BOT_NAME and METRICS_PORT to enable)')
 
+    session.middleware(RetryRequestMiddleware())
+
     bot = Bot(
         token=config.tg_bot.token,
         session=session,
-        default=DefaultBotProperties(parse_mode='HTML'),
+        default=DefaultBotProperties(parse_mode='HTML', link_preview_is_disabled=True),
     )
     container = build_container(config)
 
@@ -85,11 +102,20 @@ async def main() -> None:
 
     logger.info('Including routers')
     dp.include_router(admin_router)
-    dp.include_router(default_router)
-    dp.include_router(inline_router)
+    dp.include_router(admin_support_router)
+    # Диалоги — выше catch-all'ов: их хендлеры отфильтрованы по dialog-state,
+    # поэтому ловят ввод (MessageInput) только когда диалог активен, и не мешают остальным.
     dp.include_router(users_dialog)
     dp.include_router(user_query_dialog)
+    dp.include_router(projects_dialog)
+    dp.include_router(my_projects_dialog)
+    dp.include_router(operator_tickets_dialog)
+    dp.include_router(operator_router)
+    dp.include_router(relay_router)
+    dp.include_router(default_router)
+    dp.include_router(inline_router)
     setup_dialogs(dp)
+    dp.include_router(errors_router)
 
     logger.info('Including middlewares')
     dp.update.middleware(GetUserMiddleware())

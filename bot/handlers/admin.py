@@ -28,7 +28,12 @@ async def command_getcmds(message: Message):
     admin_commands = '\n'.join(str(command) for command in BaseRouter.available_commands if command.is_admin)
     if admin_commands:
         commands_text += PHRASES_RU.subtitle.admin_commands + admin_commands
-    user_commands = '\n'.join(str(command) for command in BaseRouter.available_commands if not command.is_admin)
+    operator_commands = '\n'.join(str(command) for command in BaseRouter.available_commands if command.is_operator)
+    if operator_commands:
+        commands_text += PHRASES_RU.subtitle.operator_commands + operator_commands
+    user_commands = '\n'.join(
+        str(command) for command in BaseRouter.available_commands if not command.is_admin and not command.is_operator
+    )
     if user_commands:
         commands_text += PHRASES_RU.subtitle.user_commands + user_commands
     await message.answer(commands_text)

@@ -48,11 +48,10 @@ class Phrases:
             phrase = choice(current)
         else:
             phrase = current
-
-        # Заменяем все плейсхолдеры вида {key}
         for key, value in replacements.items():
             pattern = re.compile(r'\{\s*' + re.escape(key) + r'\s*}')
-            phrase = pattern.sub(str(value), phrase)
+            replacement = str(value)
+            phrase = pattern.sub(lambda _match, r=replacement: r, phrase)
 
         return phrase
 
