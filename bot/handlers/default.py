@@ -60,6 +60,7 @@ async def _(message: Message, command: CommandObject, state: FSMContext, **kwarg
     slug, _, _extra = payload.partition('__')
     projects_repo: ProjectsRepository = await container.get(ProjectsRepository)
     project = projects_repo.get_by_slug(slug)
+    await message.answer(PHRASES_RU.commands.start)
     if not project or not project.is_active:
         await _show_idle(message, state, PHRASES_RU.support.unknown_project)
         return
@@ -68,7 +69,8 @@ async def _(message: Message, command: CommandObject, state: FSMContext, **kwarg
 
 @router.command('start', 'обратиться в поддержку')
 async def _(message: Message, state: FSMContext, **kwargs):
-    await _show_idle(message, state, PHRASES_RU.commands.start)
+    await message.answer(PHRASES_RU.commands.start)
+    await _show_idle(message, state)
 
 
 @router.message(F.text == PHRASES_RU.button.user_contact)
@@ -148,7 +150,7 @@ async def _(callback: CallbackQuery, callback_data: TicketKindPickCallback, stat
     await drop_keyboard(callback)
     await state.set_state(SupportSG.composing)
     await state.update_data(project_id=project.project_id, project_slug=project.slug, kind=kind.value)
-    prompt_key = 'support.compose_suggestion_prompt' if kind is TicketKind.FEATURE else 'support.compose_prompt'
+    prompt_key = f'support.compose_prompt_{kind.value}'
     await callback.message.answer(
         PHRASES_RU.replace(prompt_key, project=project_link(project.title, project.url)),
         reply_markup=kb_compose_cancel(),
@@ -230,7 +232,7 @@ async def _(message: Message, bot: Bot, state: FSMContext, **kwargs):
             )
         )
         await message.answer(
-            PHRASES_RU.replace('support.suggestion_sent', project=project_title),
+            PHRASES_RU.replace('success.ticket_created_feature', project=project_title),
             reply_markup=kb_contact(),
         )
         if created:
@@ -239,7 +241,7 @@ async def _(message: Message, bot: Bot, state: FSMContext, **kwargs):
         return
 
     await message.answer(
-        PHRASES_RU.replace('support.ticket_created', project=project_title),
+        PHRASES_RU.replace(f'success.ticket_created_{kind.value}', project=project_title),
         reply_markup=kb_in_ticket(),
     )
     if created:
