@@ -54,9 +54,9 @@ success:
   banned: "Пользователь <a href=\"tg://user?id={user_id}\"><i>{user_id}</i></a> забанен"
   unbanned: "Пользователь <a href=\"tg://user?id={user_id}\"><i>{user_id}</i></a> разбанен"
   clear_temp: "✅ Временные файлы очищены"
-  ticket_created_bug: "✅ Готово! Обращение по проекту «{project}» создано — оператор ответит прямо здесь"
-  ticket_created_question: "✅ Готово! Вопрос по проекту «{project}» передали команде — оператор ответит прямо здесь"
-  ticket_created_feature: "✅ Спасибо! Идею по проекту «{project}» передали команде 🤭"
+  ticket_created_bug: "✅ Готово! Обращение по проекту <i>{project}</i> создано — оператор ответит прямо здесь"
+  ticket_created_question: "✅ Готово! Вопрос по проекту <i>{project}</i> передали команде — оператор ответит прямо здесь"
+  ticket_created_feature: "✅ Спасибо! Идею по проекту <i>{project}</i> передали команде 🤭"
 
 error:
   dialog_expired: "Опа, сообщение устарело — открой заново"
@@ -153,7 +153,7 @@ project:
   empty_title: "⚠️ Название не может быть пустым"
   added: "✅ Проект <b>{title}</b> создан"
   exists: "⚠️ Проект с таким slug уже существует"
-  not_found: "⚠️ Проект «{slug}» не найден"
+  not_found: "⚠️ Проект <i>{slug}</i> не найден"
   gone: "Проект удалён"
   disabled: "🔴 Проект отключён"
   enabled: "🟢 Проект включён"
@@ -177,7 +177,7 @@ project:
   reslugged: "✅ Slug обновлён"
   url_updated: "✅ Ссылка на проект обновлена"
   url_cleared: "✅ Ссылка на проект убрана"
-  deleted: "🗑 Проект «{title}» удалён"
+  deleted: "🗑 Проект <i>{title}</i> удалён"
   confirm_delete: |
     Удалить проект <b>{title}</b>?
 
@@ -188,7 +188,7 @@ support:
   choose_project: "По какому проекту у тебя вопрос?"
   default_kind: "Жми «Обратиться», чтобы создать обращение"
   choose_kind: |
-    Обращение по проекту «{project}»
+    Обращение по проекту <i>{project}</i>
 
     Выбери, что хочешь отправить:
   no_projects: "Поддержка временно недоступна — нет активных проектов 🤷"
@@ -200,17 +200,17 @@ support:
   compose_prompt_feature: "Расскажи свою идею — мы всё прочитаем и учтём. Ответа на предложения не будет, так что пиши свободно.\n\n«⬅️ Отмена» — если передумал"
   
   contact_cancelled: "Окей, обращение не создано. Нажми «Обратиться», когда понадобится 👋"
-  ticket_already_open: "У тебя уже есть открытое обращение по проекту «{project}». Просто пиши сюда — сообщение дойдёт до оператора"
+  ticket_already_open: "У тебя уже есть открытое обращение по проекту <i>{project}</i>. Просто пиши сюда — сообщение дойдёт до оператора"
   ticket_closed_user: "✅ Обращение закрыто. Появится новый вопрос — жми «Обратиться»"
 
 operator:
   usage_add: "⚠️ Использование: /add_operator &lt;user_id&gt; &lt;slug&gt;"
   usage_remove: "⚠️ Использование: /remove_operator &lt;user_id&gt; &lt;slug&gt;"
-  added: "✅ Пользователь <code>{user_id}</code> назначен оператором проекта «{title}»"
-  removed: "✅ Пользователь <code>{user_id}</code> снят с проекта «{title}»"
+  added: "✅ Пользователь <code>{user_id}</code> назначен оператором проекта <i>{title}</i>"
+  removed: "✅ Пользователь <code>{user_id}</code> снят с проекта <i>{title}</i>"
   already: "⚠️ Пользователь уже оператор этого проекта"
   not_assigned: "⚠️ Пользователь не оператор этого проекта"
-  list_title: "<b>Операторы проекта «{project}»</b>\n\n"
+  list_title: "<b>Операторы проекта <i>{project}</i></b>\n\n"
   list_all_title: "<b>Операторы по проектам</b>\n\n"
   list_empty: "Операторов нет"
   list_line: "<code>{user_id}</code> {name}\n"
@@ -229,7 +229,7 @@ operator:
   ticket_card: "💬 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}\nТип: {kind}\nСтатус: {status}"
   panel_empty: "Открытых обращений в твоей зоне нет"
   panel_title: "Выбери обращение:"
-  fallback_admin: "⚠️ Новый тикет #{ticket_id} · {kind} по проекту «{project}», но у проекта нет операторов. /assign_projects — взять проект"
-  fallback_admin_suggestion: "💡 Предложение #{ticket_id} по проекту «{project}» — у проекта нет операторов, тикет закрыт автоматически. Содержимое ниже"
+  fallback_admin: "⚠️ Новый тикет #{ticket_id} · {kind} по проекту <i>{project}</i>, но у проекта нет операторов. /assign_projects — взять проект"
+  fallback_admin_suggestion: "💡 Предложение #{ticket_id} по проекту <i>{project}</i> — у проекта нет операторов, тикет закрыт автоматически. Содержимое ниже"
   my_projects_title: "<b>Твои проекты</b>\nЖми, чтобы добавить или убрать себя"
   my_projects_empty: "Активных проектов нет"
