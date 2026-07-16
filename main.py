@@ -42,6 +42,7 @@ from bot.handlers import (
     errors_router,
     inline_router,
     operator_router,
+    phasalo_drollery_router,
     relay_router,
 )
 from bot.handlers.default import register_password_handler
@@ -118,6 +119,7 @@ async def main() -> None:
     dp.include_router(operator_tickets_dialog)
     dp.include_router(operator_router)
     dp.include_router(relay_router)
+    dp.include_router(phasalo_drollery_router)
     dp.include_router(default_router)
     dp.include_router(inline_router)
     setup_dialogs(dp)

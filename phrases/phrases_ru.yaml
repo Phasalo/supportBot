@@ -229,7 +229,7 @@ operator:
   ticket_card: "💬 Тикет #{ticket_id}\nПроект: <b>{project}</b>\nОт: {user}\nТип: {kind}\nСтатус: {status}"
   panel_empty: "Открытых обращений в твоей зоне нет"
   panel_title: "Выбери обращение:"
-  fallback_admin: "⚠️ Новый тикет #{ticket_id} · {kind} по проекту «{project}», но у проекта нет операторов. /my_projects — взять проект"
+  fallback_admin: "⚠️ Новый тикет #{ticket_id} · {kind} по проекту «{project}», но у проекта нет операторов. /assign_projects — взять проект"
   fallback_admin_suggestion: "💡 Предложение #{ticket_id} по проекту «{project}» — у проекта нет операторов, тикет закрыт автоматически. Содержимое ниже"
   my_projects_title: "<b>Твои проекты</b>\nЖми, чтобы добавить или убрать себя"
   my_projects_empty: "Активных проектов нет"
