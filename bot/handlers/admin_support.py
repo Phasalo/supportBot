@@ -93,22 +93,19 @@ async def _(message: Message, **kwargs):
             await message.answer(PHRASES_RU.replace('project.not_found', slug=slug))
             return
         ops = operators_repo.get_operators_for_project(project.project_id)
-        if not ops:
-            await message.answer(PHRASES_RU.operator.list_empty)
-            return
         txt = [PHRASES_RU.replace('operator.list_title', project=project_link(project.title, project.url))]
-        txt += [_operator_line(o) for o in ops]
+        txt += [_operator_line(o) for o in ops] if ops else [PHRASES_RU.operator.list_empty]
         await message.answer(''.join(txt))
         return
 
+    projects = projects_repo.get_active_projects()
+    if not projects:
+        await message.answer(PHRASES_RU.operator.list_empty)
+        return
     txt = [PHRASES_RU.operator.list_all_title]
-    has_any = False
-    for project in projects_repo.get_active_projects():
+    for project in projects:
         ops = operators_repo.get_operators_for_project(project.project_id)
-        if not ops:
-            continue
-        has_any = True
         txt.append(f'<b>{project_link(project.title, project.url)}</b>\n')
-        txt += [_operator_line(o) for o in ops]
+        txt += [_operator_line(o) for o in ops] if ops else [PHRASES_RU.operator.list_empty + '\n']
         txt.append('\n')
-    await message.answer(''.join(txt) if has_any else PHRASES_RU.operator.list_empty)
+    await message.answer(''.join(txt))
