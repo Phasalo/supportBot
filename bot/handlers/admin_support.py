@@ -17,12 +17,12 @@ def _operator_line(operator) -> str:
     return PHRASES_RU.replace('operator.list_line', user_id=operator.user_id, name=name)
 
 
-@router.command('projects', 'управление проектами (создать/изменить/удалить)')
+@router.command(('edit_projects', 'ep'), 'управление проектами — создать, изменить или удалить)')
 async def _(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(ProjectsSG.list, mode=StartMode.RESET_STACK)
 
 
-@router.command('my_projects', 'мои проекты (зона ответственности)')
+@router.command(('assign_projects', 'ap'), 'управление своей зоной ответственности')
 async def _(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(MyProjectsSG.list, mode=StartMode.RESET_STACK)
 
